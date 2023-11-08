@@ -1,4 +1,7 @@
 #include "../include/main.hpp"
+#include <SDL2/SDL_blendmode.h>
+#include <SDL2/SDL_keycode.h>
+#include <SDL2/SDL_render.h>
 
 //globabl variables
 SDL_Window *gWindow = NULL;
@@ -79,6 +82,8 @@ int main(int argc, char *args[])
 
             Uint64 last, curr;
 
+            int alpha = 0;
+
             while(!quit)
             {
                 last = SDL_GetTicks64();
@@ -95,6 +100,12 @@ int main(int argc, char *args[])
                             case SDLK_ESCAPE:
                                 quit = true;
                                 break;
+                            case SDLK_UP:
+                                alpha += 5;
+                                break;
+                            case SDLK_DOWN:
+                                alpha -= 5;
+                                break;
                         }
                     }
                 }
@@ -105,10 +116,20 @@ int main(int argc, char *args[])
                 int w,h;
                 SDL_QueryTexture(gTexture, NULL, NULL, &w, &h);
 
-                SDL_Rect src = {0, 0, w, h};
-                SDL_Rect dst = {0, 0, w, h};
+                SDL_Rect src = {260, 0, 32 * 5, 43 * 5};
+                SDL_Rect dst = {0, 0, 132 * 5, 160 * 5};
 
+                SDL_SetTextureBlendMode(gTexture, SDL_BLENDMODE_BLEND);
+
+                SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+                
                 SDL_RenderCopy(gRenderer, gTexture, &src, &dst);
+
+                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, alpha);
+
+                SDL_Rect rect = {0, 0, 132 * 5, 160 * 5};
+                
+                SDL_RenderFillRect(gRenderer, &rect);
 
                 SDL_RenderPresent(gRenderer);
 
